@@ -89,11 +89,11 @@ class makeDB:
         return Chroma(persist_directory=dbPath, embedding_function=self.embeddings)
 
 if __name__ == '__main__':
-    pdfPath = r'C:\Users\NHWM\PycharmProjects\AllocateGPT\data\pdf_logs'
+    pdfPath = r'.\data\pdf_logs'
     db = makeDB(pdfPath,
                 embeddingMethod='HuggingFace',
                 embeddingAi='BM-K/KoSimCSE-bert-multitask')
     doclist = db.filterPDF_byPeriod('2021-01-01', '2021-03-31')
     subdoclist = db.readPDF(doclist)
     monthlyDb = db.makeDB(subdoclist,
-                          dbPath=r'C:\Users\NHWM\PycharmProjects\AllocateGPT\db\210331')
+                          dbPath=r'.\AllocateGPT\db\210331')
