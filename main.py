@@ -14,8 +14,7 @@ from makeDB import makeDB
 from printAssetView import printAssetView
 from printAssetWeight import printAssetWeight
 
-#Personal Key; os.environ["OPENAI_API_KEY"] = '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'
-os.environ["OPENAI_API_KEY"] = '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'
+os.environ["OPENAI_API_KEY"] = 'API_Key'
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 pdfPath = r'data/pdf_logs'
