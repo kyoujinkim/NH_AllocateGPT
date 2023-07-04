@@ -61,7 +61,6 @@ if __name__ == '__main__':
             db = mDB.makeDB(subdocList,
                             dbPath=f'./db/{date_str}')
 
-        #['국내주식시장', '선진국주식시장', '이머징주식시장', '국내채권시장', '선진국채권시장', '이머징채권시장', '에너지원자재시장', '산업금속원자재시장', '귀금속원자재시장']
         for asset_categ in asset_dict:
 
             # continue from last saved progress
