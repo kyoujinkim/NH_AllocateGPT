@@ -43,6 +43,11 @@ asset_dict = {
               'subasset3': ['반도체','은행','자동차','에너지 화학','증권업','운송 항공업','의료 제약 바이오','소비재'],
               }
 
+for viewDate in assetViewDict:
+    for assetView in assetViewDict[viewDate]:
+        conclusion = assetViewDict[viewDate][assetView].split('\n')[-2]
+        assetViewDict[viewDate][assetView] = conclusion
+
 if __name__ == '__main__':
 
     for date in datearr:
@@ -93,3 +98,29 @@ if __name__ == '__main__':
             json.dump(assetViewDict,
                       open('assetViewDict.json', 'w', encoding='UTF-8'),
                       ensure_ascii=False)
+  
+      #determine json save file name
+      jsonSaveFileName = f"./output_rank/assetWeightDict.json"
+  
+      #iterate through assetViewDict and calculate asset weight
+      assetWeightDict = {}
+      json.dump(assetWeightDict,
+                open(jsonSaveFileName, 'w', encoding='UTF-8'),
+                ensure_ascii=False)
+
+      #print asset rank(weight)
+      for viewDate in tqdm(assetViewDict):
+          result = None
+          while result == None:
+              try:
+                  result = paw.printAssetWeight(assetViewDict[viewDate],
+                                                constraint=[],
+                                                method='recommend')
+              except:
+                  warnings.warn('Connection Error Occurred. Pend for 10-sec and retrying...')
+                  sleep(10)
+          assetWeightDict[viewDate] = result
+  
+          json.dump(assetWeightDict,
+                    open(jsonSaveFileName, 'w', encoding='UTF-8'),
+                    ensure_ascii=False)
