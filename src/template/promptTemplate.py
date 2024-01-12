@@ -20,7 +20,7 @@ def loadTemplate():
     =========
     정답:"""
 
-    template_s = """ 아래에 주어진 근거를 질문과 관련이 없는 근거는 제외하고 올바른 순서대로 다시 정렬해줘
+    template_s = """ 아래에 주어진 근거를 질문과 관련이 없는 근거는 제외하고 올바른 순서대로 다시 정렬해줘. 질문과 관련있는 근거만을 사용해줘.
     정답의 형식은 아래 <예시>를 참고해. 정답은 <실제> 부분만을 보고 작성해줘.
 
     <예시>
@@ -45,7 +45,7 @@ def loadTemplate():
     =========
     정답: """
 
-    template_agg = """아래에 주어진 근거를 종합해서 질문에 대한 결론을 간단하고 명료한 어조로 작성해줘.
+    template_agg = """아래에 주어진 근거를 종합해서 질문에 대한 결론을 간단하고 명료한 어조로 작성해줘. 질문과 관련있는 근거만을 사용해줘. 관련있는 근거가 없다면 답변을 작성하지 않아도 돼.
     정답의 형식은 아래 <예시>를 참고해. 정답은 <실제> 부분만을 보고 작성해줘.
 
     <예시>
@@ -66,3 +66,76 @@ def loadTemplate():
     return {'template':template,
             'template_s':template_s,
             'template_agg':template_agg}
+
+def loadTemplateV2():
+    template = """I want you to act as a Financial Analyst.
+    Firstly, analyze the given list of evidence and questions.
+    For each question, filter out any evidence that is irrelevant to the particular question and asset.
+    Then, arrange the remaining evidence in an order that logically supports the detail answer to the question.
+    Finally, formulate a list of detailed answers for each question about asset based on the relevant evidence.
+    Refer to the provided example for the format of answers,
+    ensuring that your response solely reflects the actual facts or data from the 'Actual' section of the evidence.
+    Structure your answers clearly and concisely, mirroring the example's format. Answer should be Explanatory and detailed with step by step.
+    Given text will be in {input_lang}, but you can respond in English.
+
+    <Example>
+    Asset: Secondary Batteries Industry
+    Asset Detail: The secondary battery industry is a industry which manufactures secondary batteries with lithium-ion batteries, lithium polymer batteries, and others.
+    Question: The background of the rise in tech stocks and future prospects
+    =========
+    Evidence: Expecting the fastest growth among secondary battery material companies with CNT current collectors
+    Source: Secondary Battery Materials. 10pg
+    Evidence: Stock elasticity due to the possession of solid-state current collector technology by nanomaterials
+    Source: NH Investment & Securities. Solid-state Current Collectors. 20pg
+    Evidence: A slight decrease in the stock prices of secondary battery cells and materials due to the secondary battery Upstream policy of European CRMA
+    Source: Secondary Battery Upstream. 7pg
+    Evidence: The company, a producer of CNT powder which is the raw material of CNT current collectors, produces conductive materials that act as a conduit for electronics
+    Source: Powder Production Companies. 1pg
+    =========
+    Answer: - Materials poised for growth based on technological competitiveness in secondary batteries include silicon anode materials, CNT current collectors, among others
+    - Expecting the fastest growth among secondary battery material companies with CNT current collectors
+    - Stock elasticity due to the possession of solid-state current collector technology by nanomaterials
+    - The company produces conductive materials, which are essential for electronics and made from CNT powder, the raw material of CNT current collectors
+
+    <Actual>
+    Asset: {asset}
+    Asset Detail: {asset_description}
+    Question: {question}
+    =========
+    Evidence: {summaries}
+    =========
+    Answer:"""
+
+    template = """I want you to act as a Financial Analyst.
+    Firstly, analyze the given list of evidence and questions.
+    For each question, filter out any evidence that is irrelevant to the particular question and asset.
+    Then, arrange the remaining evidence in an order that logically supports the detail answer to the question.
+    Finally, formulate a list of detailed answers for each question about asset based on the relevant evidence.
+    Refer to the provided example for the format of answers, ensuring that your response solely reflects the actual facts or data from the the evidence.
+    Answer with several key points in detail as much as possible.
+    
+    Asset: {asset}
+    Asset Detail: {asset_description}
+    Question: {question}
+    =========
+    Evidence: {summaries}
+    =========
+    Answer:"""
+
+    template_agg = """I want you to act as a Financial Analyst.
+    Using the evidence provided below, synthesize a conclusion for the question.
+    You must have to follow the instructions below.
+        1. Answer must include more than 5 key points.
+        2. Only use evidence that is relevant to the question.
+        3. Arrange the evidence in a logical order that supports the answer.
+    
+    Asset: {asset}
+    Asset Detail: {asset_description}
+    Question: {question}
+    =========
+    Evidence: {summaries}
+    =========
+    Answer: """
+
+    return {'template': template,
+            'template_agg': template_agg}

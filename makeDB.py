@@ -10,12 +10,15 @@ from typing import List
 
 import pandas as pd
 
-'''폴더로부터 원하는 기간의 PDF 문서들을 가져온 후, 텍스트를 추출, 그리고 DB에 저장하는 클래스입니다.'''
 
 class makeDB:
     def __init__(self, pdfPath:str, embeddingMethod:str, embeddingAi:str):
         '''
-        :param pdfPath: PDF 문서들이 저장된 폴더 경로
+        폴더로부터 원하는 기간의 PDF 문서들을 가져온 후, 텍스트를 추출, 그리고 DB에 저장하는 클래스입니다.
+
+        :param pdfPath:
+        :param embeddingMethod:
+        :param embeddingAi:
         '''
         #기간 지정(월 OR 분기 단위)
          #계속해서 기간을 재지정할거니까, init에 넣지는 말자
@@ -26,31 +29,38 @@ class makeDB:
         if embeddingMethod == 'HuggingFace':
             self.embeddings = HuggingFaceEmbeddings(model_name=embeddingAi)
         elif embeddingMethod == 'OpenAi':
-            self.embeddings = OpenAIEmbeddings(model_name=embeddingAi)
+            self.embeddings = OpenAIEmbeddings()
         else:
             raise ValueError('embeddingMethod는 HuggingFace 또는 OpenAi만 가능합니다.')
 
-    def filterPDF_byPeriod(self, start:str, end:str):
+    def filterPDF(self, provider:str, start:str, end:str):
         '''
+        PDF를 정해진 기간과 제공자를 기준으로 필터링합니다.
+
         :param start: string format start date
         :param end: string format end date
         :return: list of pdf file path
         '''
         pdfList = glob(self.pdfPath + '/*.pdf')
         pdfDate = [x.split('(')[1].split(')')[0] for x in pdfList]
+        pdfProvider = [x.split('.')[-2].replace(' ','') for x in pdfList]
 
-        pdfDf = pd.DataFrame({'pdfPath':pdfList, 'pdfDate':pdfDate})
+        pdfDf = pd.DataFrame({'pdfPath':pdfList, 'pdfDate':pdfDate, 'pdfProvider':pdfProvider})
         pdfDf.index = pd.to_datetime(pdfDf['pdfDate'], format='%Y, %B %d')
         pdfDf = pdfDf.sort_index()
 
-        #filter pdfDf by start and end parameter
-        pdfDf = pdfDf.loc[start:end]
+        #filter pdfDf by provider, start and end parameter
+        if provider == '':
+            pdfDf = pdfDf.loc[start:end]
+        else:
+            pdfDf = pdfDf[pdfDf.pdfProvider == provider].loc[start:end]
 
         return pdfDf.pdfPath.tolist()
 
     def readPDF(self, pdfPath:List[str]):
         '''
         pdfPath를 받아서 readPDF.py의 getPDF 함수를 통해 list of Document를 반환합니다.
+
         :param pdfPath: list of pdf file path
         :return: list of Sub Document
         '''
@@ -62,8 +72,8 @@ class makeDB:
         subdocList = []
         for doc in tqdm(docList, desc='PDF 세부분할'):
             subdoc = self.pr.split_text_byChunk(doc,
-                                                chunk_size=500,
-                                                overlap=50)
+                                                chunk_size=800,
+                                                overlap=100)
             subdocList.extend(subdoc)
 
         return subdocList
@@ -89,11 +99,11 @@ class makeDB:
         return Chroma(persist_directory=dbPath, embedding_function=self.embeddings)
 
 if __name__ == '__main__':
-    pdfPath = r'.\data\pdf_logs'
+    pdfPath = r'C:\Users\NHWM\PycharmProjects\AllocateGPT\data\pdf_logs'
     db = makeDB(pdfPath,
-                embeddingMethod='HuggingFace',
+                embeddingMethod='OpenAi',
                 embeddingAi='BM-K/KoSimCSE-bert-multitask')
-    doclist = db.filterPDF_byPeriod('2021-01-01', '2021-03-31')
+    doclist = db.filterPDF('', '2023-10-01', '2023-12-31')
     subdoclist = db.readPDF(doclist)
     monthlyDb = db.makeDB(subdoclist,
-                          dbPath=r'.\AllocateGPT\db\210331')
+                          dbPath=r'C:\Users\NHWM\PycharmProjects\AllocateGPT\db\231231')

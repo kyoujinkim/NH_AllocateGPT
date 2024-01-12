@@ -13,7 +13,11 @@ from tqdm import tqdm
 
 class PDFReader:
     def __init__(self):
-        self.nonNameList = "[<>?:|/\\*]"
+        '''
+        PDF 문서를 읽어서 텍스트를 추출하는 클래스입니다.
+        '''
+
+        self.nonNameList = "[.<>?:|/\\*]"
         self.EMAIL_PATTERN = re.compile(r'''(([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+)(\.[a-zA-Z]{2,4}))''')
         self.URL_PATTERN = re.compile("(ftp|http|https)?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
         self.URL_PATTERN2 = re.compile("www.(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
@@ -41,7 +45,8 @@ class PDFReader:
     def getPDF(self, filelist:List, sample:float=1.0):
         '''
         지정된 경로의 PDF 문서들의 텍스트 값을 가져옵니다.
-        :param datapath: PDF 문서 경로
+
+        :param filelist: PDF 문서 목록
         :param sample: PDF 문서 전체 중 일부 비율만을 추출
         :return:
         '''
@@ -74,7 +79,9 @@ class PDFReader:
                 content_concat = ' '.join(content_drop)
                 content_cleanse = self.cleanse_text(content_concat)
 
-                if sum([x in content_cleanse for x in ['compliance', 'Compliance', '무단 복제 및 배포']])>0:
+                if sum([x in content_cleanse for x in ['compliance', 'Compliance'
+                    , '무단 복제 및 배포', '투자의견 및 목표주가', '신의 성실', '외부의 부당한 압력', '허락없이 복사'
+                    , '투자자의 투자판단']])>0:
                     continue
 
                 if len(content_cleanse) > 600 and (sum(c.isalpha() for c in content_cleanse) > sum(c.isdigit() for c in content_cleanse)):
@@ -98,8 +105,9 @@ class PDFReader:
         text_list = RecursiveCharacterTextSplitter(chunk_overlap=overlap, chunk_size=chunk_size).split_text(text)
         doc_source_unicode = unicodedata.normalize('NFC', doc.metadata['source'])
         if "[기업]" in doc_source_unicode:
-            compname = doc_source_unicode.split("[기업]")[1].split(",")[0]
-            text_list = [compname + ", " + x for x in text_list]
+            compname = doc_source_unicode.split("[기업]")[1].split(".")[0]
+            text_list = [compname + ". " + x for x in text_list]
+
         doc_list = []
         for text in text_list:
             new_doc = Document(

@@ -14,11 +14,16 @@ def loadTemplate(assetViews: dict, constraint: List[str] = []):
         assetViewTemplate += f'자산{counter}. {asset} : {assetViews[asset]}\n'
         counter += 1
 
-    template = f'''다음 자산별 전망에 따라 수익률을 극대화할 수 있도록, 추천순위를 정하십시오. {constraint}
-=========
-[전망]
-{assetViewTemplate}
-=========
-자산별 추천순위:'''
+    template = f'''
+    다음 자산별 전망에 따라 수익률을 극대화할 수 있도록, 추천순위를 정하십시오. {constraint}
+    추천순위는 아래와 같은 형식으로 작성하십시오.
+    1순위. 국내주식
+    2순위. 미국주식
+    3순위. 이머징주식
+    =========
+    [전망]
+    {assetViewTemplate}
+    =========
+    자산별 추천순위:'''
 
     return template
