@@ -1,6 +1,7 @@
-from langchain.embeddings import HuggingFaceEmbeddings, OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.schema import Document
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from tqdm import tqdm
 
 from src.readPDF import PDFReader
@@ -29,7 +30,7 @@ class makeDB:
         if embeddingMethod == 'HuggingFace':
             self.embeddings = HuggingFaceEmbeddings(model_name=embeddingAi)
         elif embeddingMethod == 'OpenAi':
-            self.embeddings = OpenAIEmbeddings()
+            self.embeddings = OpenAIEmbeddings(model=embeddingAi)
         else:
             raise ValueError('embeddingMethod는 HuggingFace 또는 OpenAi만 가능합니다.')
 

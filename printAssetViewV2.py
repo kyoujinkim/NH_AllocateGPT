@@ -4,7 +4,7 @@ from typing import List
 
 import openai
 import tiktoken
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.docstore.document import Document
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser

@@ -27,18 +27,18 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 pdfPath = r'data/pdf_logs'
 mDB = makeDB(pdfPath,
-             embeddingMethod='HuggingFace',#'HuggingFace', OpenAi
-             embeddingAi='snunlp/KR-SBERT-V40K-klueNLI-augSTS',#'BM-K/KoSimCSE-bert-multitask', text-embedding-ada-002
+             embeddingMethod='OpenAi',#'HuggingFace', OpenAi
+             embeddingAi='text-embedding-3-large',#'BM-K/KoSimCSE-bert-multitask', text-embedding-3-large, snunlp/KR-SBERT-V40K-klueNLI-augSTS
              )
 
-datearr = pd.date_range(start='2023-12-31', end='2023-12-31', freq='Q').tolist()
+datearr = pd.date_range(start='2024-06-30', end='2024-06-30', freq='Q').tolist()
 
-pav = printAssetView(API_KEY=OPENAI_API_KEY, llmAiEngine='gpt-3.5-turbo-1106', numberOfReason=15)
-paw = printAssetWeight(llmAiEngine='gpt-3.5-turbo-1106')
+pav = printAssetView(API_KEY=OPENAI_API_KEY, llmAiEngine='gpt-4o', numberOfReason=15)
+paw = printAssetWeight(llmAiEngine='gpt-4o')
 
 # define Universe
 asset_dict = {
-              'subasset1': ['국내 주식', '미국 주식', '유럽 주식', '일본 주식', '중국 주식', '이머징 주식'],
+              'subasset1': ['한국 주식', '미국 주식', '유럽 주식', '일본 주식', '중국 주식', '이머징 주식'],
               'subasset4': ['성장스타일', '가치스타일', '퀄리티스타일', '모멘텀스타일', '배당스타일'],
               'subasset7': ['반도체', '소프트웨어', '2차전지', 'IT하드웨어', '통신서비스', '철강', '에너지', '유틸리티'
                             , '자동차', '건강관리', '화학', '필수소비재', '운송', '보험', '은행', '조선', '우주항공, 국방'
@@ -84,8 +84,8 @@ if __name__ == '__main__':
             for asset_categ in asset_dict:
 
                 # continue from last saved progress
-                if asset_categ+'_'+date_str in assetViewDict:
-                    continue
+                #if asset_categ+'_'+date_str in assetViewDict:
+                #    continue
 
                 assetTable = asset_dict[asset_categ]
                 pav.define_universe(assetTable)
