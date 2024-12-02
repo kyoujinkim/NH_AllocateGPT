@@ -1,0 +1,10 @@
+langchain~=0.2.6
+tqdm~=4.65.0
+pandas~=2.0.1
+numpy~=1.24.3
+torch~=2.1.2
+transformers~=4.36.2
+selenium~=4.9.0
+openai~=1.35.7
+tiktoken~=0.7.0
+urllib3~=1.26.15
