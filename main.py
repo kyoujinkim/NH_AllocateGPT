@@ -31,7 +31,7 @@ mDB = makeDB(pdfPath,
              embeddingAi='text-embedding-3-large',#'BM-K/KoSimCSE-bert-multitask', text-embedding-3-large, snunlp/KR-SBERT-V40K-klueNLI-augSTS
              )
 
-datearr = pd.date_range(start='2024-06-30', end='2024-06-30', freq='Q').tolist()
+datearr = pd.date_range(start='2024-09-30', end='2024-09-30', freq='Q').tolist()
 
 pav = printAssetView(API_KEY=OPENAI_API_KEY, llmAiEngine='gpt-4o', numberOfReason=15)
 paw = printAssetWeight(llmAiEngine='gpt-4o')
@@ -82,6 +82,12 @@ if __name__ == '__main__':
 
             #['국내주식시장', '선진국주식시장', '이머징주식시장', '국내채권시장', '선진국채권시장', '이머징채권시장', '에너지원자재시장', '산업금속원자재시장', '귀금속원자재시장']
             for asset_categ in asset_dict:
+                if asset_categ == 'subasset1':
+                    filter = {"analyst": {"$ne":"김규진"}}
+                elif asset_categ == 'subasset4':
+                    filter = {"$and": [{"class": {"$ne":" 해외기업"}}, {"class": {"$ne":" 기업"}}, {"analyst": {"$ne": "김규진"}}]}
+                else:
+                    filter = {"$and": [{"class": {"$ne":" 해외기업"}}, {"class":{"$ne":" 글로벌산업"}}, {"class":{"$ne":" 글로벌전략"}}, {"analyst": {"$ne":"김규진"}}]}
 
                 # continue from last saved progress
                 #if asset_categ+'_'+date_str in assetViewDict:
@@ -98,7 +104,7 @@ if __name__ == '__main__':
                 counter = 0
                 while conclusion == None and counter < 5:
                     try:
-                        conclusion, assetView = pav.printAssetView()
+                        conclusion, assetView = pav.printAssetView(filter)
                     except:
                         counter += 1
                         sleep(180)

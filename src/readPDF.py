@@ -1,6 +1,7 @@
 import html
 import random
 import re
+from glob import glob
 from typing import List
 
 import unicodedata
@@ -28,15 +29,15 @@ class PDFReader:
 
     def cleanse_text(self, text):
         #text = text.lower()
-        text = text.replace("\n\n", '. ').replace("\n", '').replace("\'s", '')
+        #text = text.replace("\n\n", '. ').replace("\n", '').replace("\'s", '')
         text = re.sub(self.EMAIL_PATTERN, ' ', text)   # 이메일 패턴 제거
         text = re.sub(self.URL_PATTERN, ' ', text)   # URL 패턴 제거
         text = re.sub(self.URL_PATTERN2, ' ', text)   # URL 패턴 제거
         text = re.sub(self.ACCOUNT_PATTERN, ' ', text)   # 트위터 계정명 패턴 제거 (e.g., @iAmPanoramic)
         text = re.sub(self.PHONE_PATTERN, ' ', text)
-        text = re.sub(re.compile('<.*?>'), '', text)   # HTML 태그 제거 (e.g., <br>)
-        text = html.unescape(text)   # HTML 코드 변환 (&#39; -> ')
-        text = text.translate(str.maketrans(self.removal_list, '.'*len(self.removal_list)))   # 특수문자 제거
+        #text = re.sub(re.compile('<.*?>'), '', text)   # HTML 태그 제거 (e.g., <br>)
+        #text = html.unescape(text)   # HTML 코드 변환 (&#39; -> ')
+        #text = text.translate(str.maketrans(self.removal_list, '.'*len(self.removal_list)))   # 특수문자 제거
         text = re.sub(re.compile('\.\.\.'), '', text)
         text = re.sub(self.MULTIPLE_SPACES, ' ', text)   # 무의미한 공백 제거
 
@@ -84,7 +85,7 @@ class PDFReader:
                     , '투자자의 투자판단']])>0:
                     continue
 
-                if len(content_cleanse) > 600 and (sum(c.isalpha() for c in content_cleanse) > sum(c.isdigit() for c in content_cleanse)):
+                if len(content_cleanse) > 50 and (sum(c.isalpha() for c in content_cleanse) > sum(c.isdigit() for c in content_cleanse)):
                     try:
                         pdf_info_date = int(dt.datetime.strptime(pdf_info.split('(')[1].split(')')[0], '%Y, %B %d').strftime('%y%m%d'))
                     except:
@@ -108,12 +109,21 @@ class PDFReader:
             compname = doc_source_unicode.split("[기업]")[1].split(".")[0]
             text_list = [compname + ". " + x for x in text_list]
 
+        source_list = doc_source_unicode.split('.')
+        source_list[0] = source_list[0].split('\\')[-1]
         doc_list = []
         for text in text_list:
             new_doc = Document(
                 page_content=text,
-                metadata={"source": doc.metadata['source'], "page": doc.metadata['page'], "date": doc.metadata['date']},
+                metadata={"source": doc.metadata['source'], "class": source_list[2], "analyst":source_list[0], "page": doc.metadata['page'], "date": doc.metadata['date']},
             )
             doc_list.append(new_doc)
 
         return doc_list
+
+if __name__ == '__main__':
+    # Load the data
+    pdflist = glob('C:/Users/NHWM/PycharmProjects/AllocateGPT_v2/data/*.pdf')
+    pr = PDFReader()
+    docList = pr.getPDF(pdflist[:1])
+    c = 1

@@ -70,9 +70,9 @@ class printAssetView:
         #set baseDocument for printAssetView
         self.baseDocument = baseDocument
 
-    def get_similarDocs(self, query):
+    def get_similarDocs(self, query, filter=None):
         #get similar docs for printAssetView
-        return self.baseDocument.similarity_search(query, k=self.numberOfReason*3)
+        return self.baseDocument.similarity_search(query, k=self.numberOfReason*3, filter=filter)
 
     def printEvidence(self, docs, query, asset) -> List[Document]:
 
@@ -113,7 +113,7 @@ class printAssetView:
 
         return ''.join(quoteOutput)
 
-    def printAssetView(self):
+    def printAssetView(self, filter=None):
         '''
         쿼리에 대한 자산관점 요약을 생성하는 텍스트 컨센서스 생성 프로세스
         :param query:
@@ -131,7 +131,7 @@ class printAssetView:
 
             '''유사 문서 목록 찾기'''
             pbar.set_postfix_str(f"{asset} : Find Similar Docs")
-            docs = self.get_similarDocs(query)
+            docs = self.get_similarDocs(query, filter)
 
             '''유사 문서 재정렬'''
             pbar.set_postfix_str(f"{asset} : Re-ranking similar Docs")
