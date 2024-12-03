@@ -113,7 +113,7 @@ class printAssetView:
 
         return ''.join(quoteOutput)
 
-    def printAssetView(self, filter=None):
+    def printAssetView(self, filter=None, device='cpu'):
         '''
         쿼리에 대한 자산관점 요약을 생성하는 텍스트 컨센서스 생성 프로세스
         :param query:
@@ -135,7 +135,7 @@ class printAssetView:
 
             '''유사 문서 재정렬'''
             pbar.set_postfix_str(f"{asset} : Re-ranking similar Docs")
-            docs = self.rR.rerank(query, docs, top_k=self.numberOfReason)
+            docs = self.rR.rerank(query, docs, top_k=self.numberOfReason, device=device)
 
             '''근거 목록 저장'''
             pbar.set_postfix_str(f"{asset} : Print Evidence")
