@@ -21,16 +21,16 @@ class reRanker:
             pairs.append([query, doc.page_content])
         return pairs
 
-    def scoring(self, pairs):
+    def scoring(self, pairs, device):
         with torch.no_grad():
-            inputs = self.tokenizer(pairs, padding=True, truncation=True, return_tensors='pt', max_length=512)
-            scores = self.model(**inputs, return_dict=True).logits.view(-1, ).float()
+            inputs = self.tokenizer(pairs, padding=True, truncation=True, return_tensors='pt', max_length=512).to(device)
+            scores = self.model(**inputs, return_dict=True).to(device).logits.view(-1, ).float()
             scores = exp_normalize(scores.numpy())
             return scores
 
-    def rerank(self, query: str, docs: [list], top_k: int = 10):
+    def rerank(self, query: str, docs: [list], top_k: int = 10, device='cpu'):
         pairs = self.__make_pair(query, docs)
-        scores = self.scoring(pairs)
+        scores = self.scoring(pairs, device)
 
         result = pd.DataFrame([docs, scores], index=['Doc', 'Score']).T\
                      .sort_values(by='Score', ascending=False)[:top_k]
