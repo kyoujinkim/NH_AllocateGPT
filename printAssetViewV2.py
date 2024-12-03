@@ -136,7 +136,7 @@ class printAssetView:
 
             '''유사 문서 재정렬'''
             pbar.set_postfix_str(f"{asset} : Re-ranking similar Docs")
-            docs = self.rR.rerank(query, docs, top_k=self.numberOfReason, device=device)
+            docs = self.rR.rerank(query, docs, top_k=self.numberOfReason)
 
             '''근거 목록 저장'''
             pbar.set_postfix_str(f"{asset} : Print Evidence")
