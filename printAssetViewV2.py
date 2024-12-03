@@ -114,7 +114,7 @@ class printAssetView:
 
         return ''.join(quoteOutput)
 
-    def printAssetView(self, filter=None, device='cpu'):
+    def printAssetView(self, filter=None):
         '''
         쿼리에 대한 자산관점 요약을 생성하는 텍스트 컨센서스 생성 프로세스
         :param query:
@@ -146,7 +146,6 @@ class printAssetView:
                 context_doc = self.printEvidence(docs, query, asset)
                 context_doc_total.append(context_doc)
             context_doc = '\n'.join(context_doc_total)
-            #context_doc = self.printEvidence(docs, query, asset)
 
             '''결론 출력'''
             pbar.set_postfix_str(f"{asset} : Print Conclusion")
@@ -156,9 +155,9 @@ class printAssetView:
             #quoteOutput = self.printQuote(context_doc, docs)
 
             '''전체문구'''
-            totalOutput = ('\n[Conclusion]').join([context_doc, conclusion]) #, quoteOutput])
+            totalOutput = ('\n[Conclusion]').join([context_doc, conclusion])
 
-            result[asset] = context_doc #conclusion
+            result[asset] = context_doc
             archive[asset] = totalOutput
 
         return result, archive
