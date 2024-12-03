@@ -28,6 +28,7 @@ class printAssetView:
                  llmAiEngine: str = 'gpt-3.5-turbo-1106',
                  numberOfReason: int = 10,
                  asset_descripion_path: str = './src/asset_description.json',
+                 device='cpu'
                  ):
 
         self.API_KEY = API_KEY
@@ -35,7 +36,7 @@ class printAssetView:
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         self.numberOfReason = numberOfReason
         self.asset_description = json.load(open(asset_descripion_path, 'r', encoding='utf-8'))
-        self.rR = reRanker()
+        self.rR = reRanker(device=device)
 
         templates = pTemp.loadTemplate()
         q_template = qTemp.loadQueryGenTemplate()

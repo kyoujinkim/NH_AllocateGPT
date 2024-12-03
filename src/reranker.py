@@ -10,9 +10,9 @@ def exp_normalize(x):
     return y / y.sum()
 
 class reRanker:
-    def __init__(self):
+    def __init__(self, device='cpu'):
         self.tokenizer = AutoTokenizer.from_pretrained('Dongjin-kr/ko-reranker')
-        self.model = AutoModelForSequenceClassification.from_pretrained('Dongjin-kr/ko-reranker')
+        self.model = AutoModelForSequenceClassification.from_pretrained('Dongjin-kr/ko-reranker').to(torch.device(device))
         self.model.eval()
 
     def __make_pair(self, query, docs):
@@ -21,16 +21,17 @@ class reRanker:
             pairs.append([query, doc.page_content])
         return pairs
 
-    def scoring(self, pairs, device):
+    def scoring(self, pairs):
         with torch.no_grad():
-            inputs = self.tokenizer(pairs, padding=True, truncation=True, return_tensors='pt', max_length=512).to(device)
-            scores = self.model(**inputs, return_dict=True).to(device).logits.view(-1, ).float()
+            inputs = self.tokenizer(pairs, padding=True, truncation=True, return_tensors='pt', max_length=512)
+            inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
+            scores = self.model(**inputs, return_dict=True).logits.view(-1, ).float()
             scores = exp_normalize(scores.numpy())
             return scores
 
-    def rerank(self, query: str, docs: [list], top_k: int = 10, device='cpu'):
+    def rerank(self, query: str, docs: [list], top_k: int = 10):
         pairs = self.__make_pair(query, docs)
-        scores = self.scoring(pairs, device)
+        scores = self.scoring(pairs)
 
         result = pd.DataFrame([docs, scores], index=['Doc', 'Score']).T\
                      .sort_values(by='Score', ascending=False)[:top_k]
