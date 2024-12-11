@@ -10,7 +10,7 @@ def exp_normalize(x):
     return y / y.sum()
 
 class reRanker:
-    def __init__(self, device='cpu'):
+    def __init__(self, model:str='', device='cpu'):
         self.tokenizer = AutoTokenizer.from_pretrained('Dongjin-kr/ko-reranker')
         self.model = AutoModelForSequenceClassification.from_pretrained('Dongjin-kr/ko-reranker').to(torch.device(device))
         self.model.eval()
@@ -26,7 +26,7 @@ class reRanker:
             inputs = self.tokenizer(pairs, padding=True, truncation=True, return_tensors='pt', max_length=512)
             inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
             scores = self.model(**inputs, return_dict=True).logits.view(-1, ).float()
-            scores = exp_normalize(scores.numpy())
+            scores = exp_normalize(scores.cpu().numpy())
             return scores
 
     def rerank(self, query: str, docs: [list], top_k: int = 10):

@@ -31,7 +31,7 @@ mDB = makeDB(pdfPath,
              embeddingAi='text-embedding-3-large',#'BM-K/KoSimCSE-bert-multitask', text-embedding-3-large, snunlp/KR-SBERT-V40K-klueNLI-augSTS
              )
 
-datearr = pd.date_range(start='2024-09-30', end='2024-09-30', freq='Q').tolist()
+datearr = pd.date_range(start='2024-12-31', end='2024-12-31', freq='Q').tolist()
 
 pav = printAssetView(API_KEY=OPENAI_API_KEY, llmAiEngine='gpt-4o', numberOfReason=15)
 paw = printAssetWeight(llmAiEngine='gpt-4o')
@@ -90,8 +90,8 @@ if __name__ == '__main__':
                     filter = {"$and": [{"class": {"$ne":" 해외기업"}}, {"class":{"$ne":" 글로벌산업"}}, {"class":{"$ne":" 글로벌전략"}}, {"analyst": {"$ne":"김규진"}}]}
 
                 # continue from last saved progress
-                #if asset_categ+'_'+date_str in assetViewDict:
-                #    continue
+                if asset_categ+'_'+date_str in assetViewDict:
+                    continue
 
                 assetTable = asset_dict[asset_categ]
                 pav.define_universe(assetTable)
