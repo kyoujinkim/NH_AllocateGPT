@@ -86,8 +86,10 @@ if __name__ == '__main__':
                     filter = {"analyst": {"$ne":"김규진"}}
                 elif asset_categ == 'subasset4':
                     filter = {"$and": [{"class": {"$ne":" 해외기업"}}, {"class": {"$ne":" 기업"}}, {"analyst": {"$ne": "김규진"}}]}
-                else:
+                elif asset_categ == 'subasset7':
                     filter = {"$and": [{"class": {"$ne":" 해외기업"}}, {"class":{"$ne":" 글로벌산업"}}, {"class":{"$ne":" 글로벌전략"}}, {"analyst": {"$ne":"김규진"}}]}
+                else:
+                    filter = {""}
 
                 # continue from last saved progress
                 if asset_categ+'_'+date_str in assetViewDict:

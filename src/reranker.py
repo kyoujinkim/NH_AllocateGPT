@@ -12,7 +12,7 @@ def exp_normalize(x):
 class reRanker:
     def __init__(self, model:str='Dongjin-kr/ko-reranker', device='cpu'):
         self.tokenizer = AutoTokenizer.from_pretrained(model)
-        self.model = AutoModelForSequenceClassification.from_pretrained(model).to(torch.device(device))
+        self.model = AutoModelForSequenceClassification.from_pretrained(model, trust_remote_code=True).to(torch.device(device))
         self.model.eval()
 
     def __make_pair(self, query, docs):

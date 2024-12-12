@@ -26,7 +26,9 @@ class printAssetView:
     def __init__(self,
                  API_KEY: str,
                  llmAiEngine: str = 'gpt-3.5-turbo-1106',
-                 rerankerEngine: str = 'Dongjin-kr/ko-reranker',
+                 rerankerEngine: list = ['Alibaba-NLP/gte-multilingual-reranker-base'
+                                         , 'amberoad/bert-multilingual-passage-reranking-msmarco'
+                                         , 'Dongjin-kr/ko-reranker'],
                  numberOfReason: int = 10,
                  asset_descripion_path: str = './src/asset_description.json',
                  device='cpu'
@@ -37,7 +39,9 @@ class printAssetView:
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         self.numberOfReason = numberOfReason
         self.asset_description = json.load(open(asset_descripion_path, 'r', encoding='utf-8'))
-        self.rR = reRanker(model=rerankerEngine, device=device)
+        self.rR1 = reRanker(model=rerankerEngine[0], device=device)
+        self.rR2 = reRanker(model=rerankerEngine[1], device=device)
+        self.rR3 = reRanker(model=rerankerEngine[2], device=device)
 
         templates = pTemp.loadTemplate()
         q_template = qTemp.loadQueryGenTemplate()
@@ -137,12 +141,15 @@ class printAssetView:
 
             '''유사 문서 재정렬'''
             pbar.set_postfix_str(f"{asset} : Re-ranking similar Docs")
-            docs = self.rR.rerank(query, docs, top_k=self.numberOfReason)
+            docs1 = self.rR1.rerank(query, docs, top_k=self.numberOfReason)
+            docs2 = self.rR2.rerank(query, docs, top_k=self.numberOfReason)
+            docs3 = self.rR3.rerank(query, docs, top_k=self.numberOfReason)
+            docs = docs1 + docs2 + docs3
 
             '''근거 목록 저장'''
             pbar.set_postfix_str(f"{asset} : Print Evidence")
             context_doc_total = []
-            for i in range(3):
+            for i in range(1):
                 pbar.set_postfix_str(f"{asset} : Print Evidence - {i}")
                 context_doc = self.printEvidence(docs, query, asset)
                 context_doc_total.append(context_doc)
