@@ -38,8 +38,8 @@ class PDFReader:
         #text = re.sub(re.compile('<.*?>'), '', text)   # HTML 태그 제거 (e.g., <br>)
         #text = html.unescape(text)   # HTML 코드 변환 (&#39; -> ')
         #text = text.translate(str.maketrans(self.removal_list, '.'*len(self.removal_list)))   # 특수문자 제거
-        text = re.sub(re.compile('\.\.\.'), '', text)
-        text = re.sub(self.MULTIPLE_SPACES, ' ', text)   # 무의미한 공백 제거
+        #text = re.sub(re.compile('\.\.\.'), '', text)
+        #text = re.sub(self.MULTIPLE_SPACES, ' ', text)   # 무의미한 공백 제거
 
         return text
 

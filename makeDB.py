@@ -58,7 +58,7 @@ class makeDB:
 
         return pdfDf.pdfPath.tolist()
 
-    def readPDF(self, pdfPath:List[str]):
+    def readPDF(self, pdfPath:List[str], chunk_size:int=1500, overlap:int=500):
         '''
         pdfPath를 받아서 readPDF.py의 getPDF 함수를 통해 list of Document를 반환합니다.
 
@@ -73,8 +73,8 @@ class makeDB:
         subdocList = []
         for doc in tqdm(docList, desc='PDF 세부분할'):
             subdoc = self.pr.split_text_byChunk(doc,
-                                                chunk_size=800,
-                                                overlap=100)
+                                                chunk_size=chunk_size,
+                                                overlap=overlap)
             subdocList.extend(subdoc)
 
         return subdocList
