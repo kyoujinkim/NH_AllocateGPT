@@ -8,7 +8,7 @@ def loadTemplate(asset):
 
     return template
 
-def loadQueryTemplate(asset, asset_description, option_text):
+def loadQueryTemplate(asset, asset_description):
 
     template = f'''
     {asset}는 다음과 특성을 지니는 투자자산이야: {asset_description}
