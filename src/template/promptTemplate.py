@@ -68,7 +68,7 @@ def loadTemplate():
             'template_agg':template_agg}
 
 def loadTemplateV2():
-    template = """I want you to act as a Financial Analyst.
+    template_quote = """I want you to act as a Financial Analyst.
     Firstly, analyze the given list of evidence and questions.
     For each question, filter out any evidence that is irrelevant to the particular question and asset.
     Then, arrange the remaining evidence in an order that logically supports the detail answer to the question.
@@ -112,6 +112,7 @@ def loadTemplateV2():
     Then, arrange the remaining evidence in an order that logically supports the detail answer to the question.
     Finally, formulate a list of detailed answers for each question about asset based on the relevant evidence.
     Refer to the provided example for the format of answers, ensuring that your response solely reflects the actual facts or data from the the evidence.
+    You can also add more weights on the recent information.
     Answer with several key points in detail as much as possible.
     
     Asset: {asset}
@@ -138,4 +139,5 @@ def loadTemplateV2():
     Answer: """
 
     return {'template': template,
-            'template_agg': template_agg}
+            'template_agg': template_agg,
+            'template_quote': template_quote}

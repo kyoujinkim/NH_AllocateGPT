@@ -8,13 +8,15 @@ def loadTemplate(asset):
 
     return template
 
-def loadQueryTemplate(asset, asset_description):
+def loadQueryTemplate(asset, asset_description, option_text):
 
     template = f'''
-    {asset}은 다음과 같음: {asset_description}
-    1. {asset}의 과거 성과 및 트렌드를 조회해주세요.
-    2.{asset}의 현재 상황 및 전망을 알려주세요.
-    3.{asset}에 대한 위험과 우려, 기회를 알려주세요.'''
+    {asset}는 다음과 특성을 지니는 투자자산이야: {asset_description}
+    
+    
+    1. {asset}의 과거 성과 및 트렌드를 알려줘.
+    2.{asset}의 현재 상황 및 전망을 알려줘.
+    3.{asset}에 대한 위험과 우려, 기회를 알려줘.'''
 
     return template
 
