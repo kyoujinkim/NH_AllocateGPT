@@ -149,7 +149,7 @@ class printAssetView:
             '''근거 목록 저장'''
             pbar.set_postfix_str(f"{asset} : Print Evidence")
             context_doc_total = []
-            for i in range(1):
+            for i in range(2):
                 pbar.set_postfix_str(f"{asset} : Print Evidence - {i}")
                 context_doc = self.printEvidence(docs, query, asset)
                 context_doc_total.append(context_doc)
